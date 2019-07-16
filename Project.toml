@@ -3,6 +3,10 @@ uuid = "a56570ba-ce5c-531d-8734-586fc97c4b8d"
 authors = ["Lyndon White <lyndon.white@invenialabs.co.uk>"]
 version = "0.1.0"
 
+[deps]
+CodeTracking = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
+MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
+
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
