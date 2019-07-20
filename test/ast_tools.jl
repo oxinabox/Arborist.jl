@@ -13,6 +13,12 @@ end
         )
 
         @test false == is_allowable_generated_body(
+            :((x for x in 1:20))
+        )
+
+
+
+        @test false == is_allowable_generated_body(
             quote
                 y=0
                 f = () -> y+=1  # NOT ALLOWED, closure

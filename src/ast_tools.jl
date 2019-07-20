@@ -24,10 +24,9 @@ in the body they generate.z
 is_allowable_generated_body(::Any)=true
 function is_allowable_generated_body(body::Expr)
     if (
-        body.head ∈ (:comprehension, :global, :->) ||
+        body.head ∈ (:comprehension, :generator, :global, :->) ||
         isdef(body)
     )
-        
         return false
     end
     return all(is_allowable_generated_body, body.args)
