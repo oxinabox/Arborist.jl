@@ -15,3 +15,22 @@ function eg2()
     return x
 end
 eg3() = 5
+
+
+function badcake1()
+    y=0
+    f = ()-> y+=1
+    f()
+    return y
+end
+
+function badcake2()
+    y=sum([1 for ii in 1:3])
+    return y
+end
+
+GLOBAL_VAR=0
+function badcake3()
+    global GLOBAL_VAR
+    GLOBAL_VAR+=1
+end

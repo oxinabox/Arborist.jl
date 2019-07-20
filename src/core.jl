@@ -48,7 +48,7 @@
     end
     
     body = MacroTools.flatten(body)
-    #Core.println(sprint((io,x)->dump(io, x;maxdepth=100), body)); Core.println()
-    #Core.println(repr(body)) 
+    Core.println(sprint((io,x)->dump(io, x;maxdepth=100), body)); Core.println()
+    Core.println(repr(body)) 
     return body 
 end
