@@ -5,7 +5,9 @@ version = "0.1.0"
 
 [deps]
 CodeTracking = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
+InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
