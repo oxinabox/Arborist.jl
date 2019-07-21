@@ -34,3 +34,6 @@ function badcake3()
     global GLOBAL_VAR
     GLOBAL_VAR+=1
 end
+
+string_demo1() = "outer" * string_demo1a()
+string_demo1a() = "inner"

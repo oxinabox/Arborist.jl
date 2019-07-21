@@ -11,6 +11,7 @@ using MacroTools
 include("reflection.jl")
 include("ast_tools.jl")
 
+include("grafters.jl")
 # must be last as generate function can't call things defined afteer them
 include("core.jl")
 end # module
