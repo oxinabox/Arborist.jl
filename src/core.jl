@@ -1,5 +1,5 @@
 # Give all the arguments the names they have in the signature
-function insert_function_preamble!(body, def, call_args_typetuple)
+function insert_function_preamble(body, def, call_args_typetuple)
     body = Expr(:block, body)
     if !isempty(def[:args])  # give args their local names
         argnames = first.(MacroTools.splitarg.(def[:args]))
@@ -20,38 +20,53 @@ function insert_function_preamble!(body, def, call_args_typetuple)
             )
         )
     end
+    return body
 end
 
 # Can't graft intrinsics
-graft(f::Core.IntrinsicFunction, args...) = f(args...)
-# Can't graft constructors (for now)
+graft(grafter, f::Core.IntrinsicFunction, args...) = f(args...)
+# for prototyping purpose ban grafting on constructors
+graft(grafter, f::Type, args...) = f(args...)
 
-#function prepare_graft(grafter)
-@generated function graft(grafter, f, call_args...)
-    call_args_typetuple = Tuple{call_args...}
-    meth = get_method(f, call_args_typetuple)
-    Core.println(string("*** ",meth))
-    
-    ast = get_ast(meth)
-    if ast===nothing
-#        return Expr(:call, :f, :call_args)
-        return quote
-            # for dev purposes
-            #@warn "No AST got. Directly invoking." #method=$meth
-            f(call_args...)
+
+"""
+As generated functions can't call things defined after them
+we call this function to redefine `graft`.
+Do this after you have defined your grafters and everything
+they call.
+"""
+function redeclare_graft()
+    @eval @inline @generated function graft(grafter, f, call_args...)
+#        Core.println(string("*** ", f))
+        Core.println(call_args)
+        call_args_typetuple = Tuple{call_args...}
+        meth = get_method(f, call_args_typetuple)
+        Core.println(string("*** ", meth))
+
+        ast = get_ast(meth)
+        if ast===nothing
+            return quote
+                # for dev purposes
+                #@warn "No AST got. Directly invoking."
+                f(call_args...)
+            end
         end
+
+        def = MacroTools.splitdef(ast)
+        body = def[:body]
+        body = qualify_calls!(body, meth.module)
+
+        # Do the actual replacement (grafting)
+        body = grafter.instance(body)
+        body = insert_function_preamble(body, def, call_args_typetuple)
+        body = MacroTools.flatten(body)
+        
+        #Core.println(sprint((io,x)->dump(io, x;maxdepth=100), body)); Core.println()
+        Core.println(repr(body))
+        Core.println()
+        
+        return body 
     end
-    
-    def = MacroTools.splitdef(ast)
-    body = def[:body]
-    body = qualify_calls!(body, meth.module)
-    
-    # Do the actual replacement (grapfting)
-    body = Base.invokelatest(grafter.instance, body)
-    insert_function_preamble!(body, def, call_args_typetuple)
-    
-    body = MacroTools.flatten(body)
-    #Core.println(sprint((io,x)->dump(io, x;maxdepth=100), body)); Core.println()
-    #Core.println(repr(body)) 
-    return body 
 end
+
+redeclare_graft() #We are actually defining it the first time here

@@ -1,9 +1,24 @@
-using Arborist: wherevar, is_allowable_generated_body
+using Arborist: wherevar, is_allowable_generated_body, insert_function_preamble
 using MacroTools
 
 @testset "wherevar" begin
     @test :T==wherevar(MacroTools.splitdef(:(foo(x::T) where {T} = x))[:whereparams][1])
     @test :T==wherevar(MacroTools.splitdef(:(foo(x::T) where {T<:Int} = x))[:whereparams][1])
+end
+
+@testset "insert_function_preamble" begin
+    call_args_typetuple = Tuple{Int}
+    ast = :(foo(x)=x)
+    def = MacroTools.splitdef(ast)
+    body = copy(def[:body])
+    neobody = insert_function_preamble(
+        body, def, call_args_typetuple
+    ) |> MacroTools.flatten
+
+    @test neobody == quote
+        (x,) = call_args
+        x
+    end
 end
 
 @testset "is_allowable_generated_body" begin
