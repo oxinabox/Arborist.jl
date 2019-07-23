@@ -28,6 +28,12 @@ graft(grafter, f::Core.IntrinsicFunction, args...) = f(args...)
 # for prototyping purpose ban grafting on constructors
 graft(grafter, f::Type, args...) = f(args...)
 
+struct Reflection
+    grafter
+    meth::Method
+    ast
+    def::Dict{Symbol}
+end
 
 """
 As generated functions can't call things defined after them
@@ -56,7 +62,9 @@ function redeclare_graft()
         body = def[:body]
 
         # Do the actual replacement (grafting)
-        body = grafter.instance(body)
+        reflection = Reflection(grafter.instance, meth, body, def)
+        body = grafter.instance(reflection)
+        
         body = qualify_calls!(body, meth.module)
         body = insert_function_preamble(body, def, call_args_typetuple)
         body = MacroTools.flatten(body)
