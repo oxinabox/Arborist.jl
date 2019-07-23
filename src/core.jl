@@ -23,6 +23,20 @@ function insert_function_preamble(body, def, call_args_typetuple)
     return body
 end
 
+function recurse!(expr, reflection)
+    @assert isexpr(expr, :call)
+    expr.args[1] = qualify_name(
+        reflection.meth.module, expr.args[1]
+    )
+    return Expr(:block,
+        Expr(:call,
+            :graft, reflection.grafter,
+            expr.args...
+        )
+    )
+end
+
+
 # Can't graft intrinsics
 graft(grafter, f::Core.IntrinsicFunction, args...) = f(args...)
 # for prototyping purpose ban grafting on constructors
