@@ -54,10 +54,10 @@ function redeclare_graft()
 
         def = MacroTools.splitdef(ast)
         body = def[:body]
-        body = qualify_calls!(body, meth.module)
 
         # Do the actual replacement (grafting)
         body = grafter.instance(body)
+        body = qualify_calls!(body, meth.module)
         body = insert_function_preamble(body, def, call_args_typetuple)
         body = MacroTools.flatten(body)
         

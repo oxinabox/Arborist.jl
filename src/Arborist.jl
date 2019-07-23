@@ -8,6 +8,8 @@ using CodeTracking
 using Revise: Revise  # Revise must be loaded for CodeTracking to work
 using MacroTools
 
+include("hack_revise.jl")
+
 include("reflection.jl")
 include("ast_tools.jl")
 

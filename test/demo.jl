@@ -41,3 +41,4 @@ string_demo1a() = "inner"
 
 fma_demo1(a) = 8*a+2
 fma_demo2(a) = (8*a)*a+(sqrt.(a))
+
