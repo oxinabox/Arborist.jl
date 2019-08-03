@@ -75,6 +75,8 @@ function redeclare_graft()
         def = MacroTools.splitdef(ast)
         body = def[:body]
 
+        #TODO: Replace the anon functions
+        
         # Do the actual replacement (grafting)
         reflection = Reflection(grafter.instance, meth, body, def)
         body = grafter.instance(reflection)

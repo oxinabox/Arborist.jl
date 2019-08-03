@@ -10,6 +10,7 @@ function qualify_calls!(ast, mod)
         expr
     end
 end
+#TODO: Don't qualify IR.
 qualify_name(mod::Module, name) = qualify_name(nameof(mod), name)
 qualify_name(mod::Symbol, name::Symbol) = Expr(:., mod, QuoteNode(name))
 qualify_name(mod, name) = name ## fallback, don't mess with things

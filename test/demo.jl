@@ -35,6 +35,8 @@ function badcake3()
     GLOBAL_VAR+=1
 end
 
+badbread1() = ()->99
+
 string_demo1() = "outer" * string_demo1a()
 string_demo1a() = "inner"
 

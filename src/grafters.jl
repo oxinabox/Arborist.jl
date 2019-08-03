@@ -28,3 +28,21 @@ function translate_strings_grafter(reflection)
         end
     end
 end
+            
+@inline function fma_grafter(reflection)
+    ast = reflection.ast
+    MacroTools.prewalk(ast) do expr
+        if (
+            @capture(expr, x_ * y_ + z_) ||
+            @capture(expr, z_ + x_ * y_)        
+            )
+            
+            return :(fma($x, $y, $z)) 
+        elseif isexpr(expr, :call)
+            return Expr(:call,
+                :graft, fma_grafter, expr.args...
+            )
+        end
+        return expr
+    end
+end
